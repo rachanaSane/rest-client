@@ -1,27 +1,44 @@
 package energy.au.rest.client.consumerest.model.serialize;
 
 import java.util.List;
+import java.util.Set;
 
 public class Band {
-   private String name;
-   private List<String> musicFestivals;
-public String getName() {
-	return name;
+   private String bandName;
+   private Set<String> musicFestivals;
+
+   
+   
+   
+public String getBandName() {
+	return bandName;
 }
-public void setName(String name) {
-	this.name = name;
+public void setBandName(String bandName) {
+	this.bandName = bandName;
 }
-public List<String> getMusicFestivals() {
+public Set<String> getMusicFestivals() {
 	return musicFestivals;
 }
-public void setMusicFestivals(List<String> musicFestivals) {
+public void setMusicFestivals(Set<String> musicFestivals) {
+	this.musicFestivals = musicFestivals;
+}
+
+public Band() {
+	
+}
+
+
+  
+public Band(String bandName, Set<String> musicFestivals) {
+	super();
+	this.bandName = bandName;
 	this.musicFestivals = musicFestivals;
 }
 @Override
 public int hashCode() {
 	final int prime = 31;
 	int result = 1;
-	result = prime * result + ((name == null) ? 0 : name.hashCode());
+	result = prime * result + ((bandName == null) ? 0 : bandName.hashCode());
 	return result;
 }
 @Override
@@ -33,13 +50,15 @@ public boolean equals(Object obj) {
 	if (getClass() != obj.getClass())
 		return false;
 	Band other = (Band) obj;
-	if (name == null) {
-		if (other.name != null)
+	if (bandName == null) {
+		if (other.bandName != null)
 			return false;
-	} else if (!name.equals(other.name))
+	} else if (!bandName.equals(other.bandName))
 		return false;
 	return true;
 }
-   
+
+
+
    
 }

@@ -1,7 +1,15 @@
 package energy.au.rest.client.consumerest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -27,6 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import energy.au.rest.client.consumerest.model.deserialize.Band;
 import energy.au.rest.client.consumerest.model.deserialize.MusicFestival;
 import energy.au.rest.client.consumerest.model.deserialize.MusicFestivalList;
+import energy.au.rest.client.consumerest.model.serialize.RecordLabel;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -135,6 +144,7 @@ public class ConsumeRestApplication {
 		    	log.info("Everything is finished");
 		    	try {
 					java2JSON(musicFestivals);
+					deSerializeList(musicFestivals);
 				} catch (JsonProcessingException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -209,5 +219,107 @@ public class ConsumeRestApplication {
 		 String value = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
 		 log.info("JSON value :\n"+value);
 	 }
+	 
+	 private void deSerializeList(List<MusicFestival> musicFestivals) {
+		 log.info("starting to deserialize *********************************************************");
+		 Map<String, List<energy.au.rest.client.consumerest.model.serialize.Band>> sortedRecordLabels = new TreeMap<String, List<energy.au.rest.client.consumerest.model.serialize.Band>>(
+	                new Comparator<String>() {
+
+	                    @Override
+	                    public int compare(String o1, String o2) {
+	                        return o1.compareTo(o2);
+	                    }
+
+	                });
+		 
+		 for(MusicFestival festival : musicFestivals) {
+			 String musicFestivalName = festival.getName();
+			List<Band> bands = festival.getBands();
+			
+			for(Band band : bands) {
+				String bandName =band.getName();
+				String recordLabel = band.getRecordLabel();
+				if(recordLabel ==null)
+					continue;
+				
+				if(sortedRecordLabels.containsKey(recordLabel)) {
+					if(bandName == null)
+						continue;
+					List<energy.au.rest.client.consumerest.model.serialize.Band> existingBands = sortedRecordLabels.get(recordLabel);
+					energy.au.rest.client.consumerest.model.serialize.Band tempBand = new energy.au.rest.client.consumerest.model.serialize.Band();
+					tempBand.setBandName(bandName);
+					int index = existingBands.indexOf(tempBand);
+					if(index >=0) {
+						energy.au.rest.client.consumerest.model.serialize.Band inListBand  =existingBands.get(index);
+						Set<String> existingMusicFestivals = inListBand.getMusicFestivals();
+						if(musicFestivalName!=null && !existingMusicFestivals.contains(musicFestivalName)){
+							existingMusicFestivals.add(musicFestivalName);
+						};
+					}else {
+						Set<String> sortedMusicFestivalNames = new TreeSet<String>(new Comparator<String>() {
+
+		                    @Override
+		                    public int compare(String o1, String o2) {
+		                        return o1.compareTo(o2);
+		                    }
+
+		                });
+						if(musicFestivalName!=null)
+							sortedMusicFestivalNames.add(musicFestivalName);
+						existingBands.add(new energy.au.rest.client.consumerest.model.serialize.Band(bandName,sortedMusicFestivalNames));
+					}
+					
+				}else {
+					List<energy.au.rest.client.consumerest.model.serialize.Band> newBands = new ArrayList();
+					Set<String> sortedMusicFestivalNames = new TreeSet<String>(new Comparator<String>() {
+
+	                    @Override
+	                    public int compare(String o1, String o2) {
+	                        return o2.compareTo(o1);
+	                    }
+
+	                });
+					if(musicFestivalName!=null)
+						sortedMusicFestivalNames.add(musicFestivalName);
+					if(bandName !=null)
+						newBands.add(new energy.au.rest.client.consumerest.model.serialize.Band(bandName,sortedMusicFestivalNames));
+					sortedRecordLabels.put(recordLabel, newBands);
+				}
+			}
+		 }
+		
+		 log.info("finished serialization process -------------------------------->");
+		 sortBandsFromRecordLabels(sortedRecordLabels);
+		/* try {
+			java2JSON(sortedRecordLabels);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+	 }
+	 
+	private void sortBandsFromRecordLabels(Map<String, List<energy.au.rest.client.consumerest.model.serialize.Band>> recordLabels) {
+		if(recordLabels.size() == 0) {
+			return;
+		}
+		
+		Map<String, List<energy.au.rest.client.consumerest.model.serialize.Band>> sortedRecordLabels = 
+				recordLabels.entrySet().stream().collect(Collectors.toMap(keyMapper -> keyMapper.getKey() , 
+						valueMapper -> valueMapper.getValue().stream().sorted(Comparator.comparing(energy.au.rest.client.consumerest.model.serialize.Band::getBandName)).collect(Collectors.toList())));
+				
+	   log.info("soring of bands successfully complete");
+	   try {
+		java2JSON(sortedRecordLabels);
+	} catch (JsonProcessingException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+		/*recordLabels.forEach((key,bandList) ->{
+			List<energy.au.rest.client.consumerest.model.serialize.Band> sortedBands = bandList.stream()
+					.sorted(Comparator.comparing(energy.au.rest.client.consumerest.model.serialize.Band::getBandName))
+					.collect(Collectors.toList());
+		});*/
+		
+	}
 
 }
