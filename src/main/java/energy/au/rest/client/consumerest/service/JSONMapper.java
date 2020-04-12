@@ -7,7 +7,11 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
+/**
+ * This class provides utility to convert and print any java object to JSON structure
+ * @author Rachana Sane
+ *
+ */
 
 @Service
 public class JSONMapper {
@@ -17,7 +21,7 @@ public class JSONMapper {
 	 public void java2JSON(Object obj) throws JsonProcessingException {
 		 ObjectMapper mapper = new ObjectMapper();
 		 String value = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
-		 log.info("JSON value :\n"+value);
+		 log.info("\n"+value);
 	 }
 
 }
