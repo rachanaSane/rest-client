@@ -6,6 +6,16 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class Band {
 	private String name;
 	private String recordLabel;
+	
+	public Band() {
+		
+	}
+	
+	public Band(String name, String recordLabel) {
+		super();
+		this.name = name;
+		this.recordLabel = recordLabel;
+	}
 	public String getName() {
 		return name;
 	}

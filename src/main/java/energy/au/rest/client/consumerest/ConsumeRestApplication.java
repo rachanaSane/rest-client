@@ -15,6 +15,7 @@ import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -34,8 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import energy.au.rest.client.consumerest.model.deserialize.Band;
 import energy.au.rest.client.consumerest.model.deserialize.MusicFestival;
-import energy.au.rest.client.consumerest.model.deserialize.MusicFestivalList;
-import energy.au.rest.client.consumerest.model.serialize.RecordLabel;
+import energy.au.rest.client.consumerest.service.RestAPIProcessor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -43,6 +43,9 @@ import reactor.core.publisher.Mono;
 public class ConsumeRestApplication {
 
 	private static final Logger log = LoggerFactory.getLogger(ConsumeRestApplication.class);
+	
+	@Autowired
+	private RestAPIProcessor restProcessor;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(ConsumeRestApplication.class, args);
@@ -55,39 +58,14 @@ public class ConsumeRestApplication {
 	
 	@Bean
 	public CommandLineRunner run(RestTemplate restTemplate) throws Exception {
-		/*return args -> {
-			restTemplate.getForObject(
-					"http://eacodingtest.digital.energyaustralia.com.au/api/v1/festivals", MusicFestival.class);
-			
-		};*/
 		
-	/*	//// Working solution ...................................................................
-		return args -> {
-			final HttpHeaders headers = new HttpHeaders();
-	        headers.set("Content-Type", "application/json");
-	        
-	      //Create a new HttpEntity
-	        final HttpEntity<String> entity = new HttpEntity<String>(headers);
-	        
-	      ResponseEntity<MusicFestival[]> response =restTemplate.exchange("http://eacodingtest.digital.energyaustralia.com.au/api/v1/festivals", HttpMethod.GET, entity,MusicFestival[].class);        
-	        
-	        MusicFestival[] festivals= response.getBody();
-	        
-	        log.info("yeyyyy...got response......");
-	        log.info("festivals size : " + festivals.length);
-	        
-		      for(int i=0;i< festivals.length;i++) {
-		        	MusicFestival festival = festivals[i];
-		        	log.info("**************************************************");
-		        	log.info("MusicFestival -"+i+":"+festival);
-		        }	
-	        
-         
-	     
-			};*/
+		return args ->{
+			restProcessor.getMusicFestivals();
+		};
 		
-		
-		return args -> {
+	/*	Working solution---------------------------------
+	 * 
+	 * return args -> {
 		WebClient webClient = WebClient.builder()
                 .baseUrl("http://eacodingtest.digital.energyaustralia.com.au")
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, "application/json")
@@ -105,16 +83,7 @@ public class ConsumeRestApplication {
 		
 		
 				
-	/*	fest.subscribe(festival -> {
-			try {
-				receiveMusicFestivalList(festival);
-			} catch (JsonProcessingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		});
-
-		fest.doFinally(s -> log.info("finished!!!!"));*/
+	
 		List<MusicFestival> musicFestivals = new ArrayList();
 		
 		fest.log().subscribe(new Subscriber<MusicFestival>() {
@@ -154,14 +123,56 @@ public class ConsumeRestApplication {
 		
 	//	log.info("done receiving fest");
 		
-		};
+		};*/
 		
 		
 		
 		
 		//--------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+		/*return args -> {
+		restTemplate.getForObject(
+				"http://eacodingtest.digital.energyaustralia.com.au/api/v1/festivals", MusicFestival.class);
+		
+	};*/
+	
+/*	//// Working solution ...................................................................
+	return args -> {
+		final HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", "application/json");
         
+      //Create a new HttpEntity
+        final HttpEntity<String> entity = new HttpEntity<String>(headers);
+        
+      ResponseEntity<MusicFestival[]> response =restTemplate.exchange("http://eacodingtest.digital.energyaustralia.com.au/api/v1/festivals", HttpMethod.GET, entity,MusicFestival[].class);        
+        
+        MusicFestival[] festivals= response.getBody();
+        
+        log.info("yeyyyy...got response......");
+        log.info("festivals size : " + festivals.length);
+        
+	      for(int i=0;i< festivals.length;i++) {
+	        	MusicFestival festival = festivals[i];
+	        	log.info("**************************************************");
+	        	log.info("MusicFestival -"+i+":"+festival);
+	        }	
+        
+     
+     
+		};*/
+	
+		
+		
+		/*	fest.subscribe(festival -> {
+		try {
+			receiveMusicFestivalList(festival);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	});
+
+	fest.doFinally(s -> log.info("finished!!!!"));*/
         
       /*  //Execute the method writing your HttpEntity to the request
         ResponseEntity<Map> response = restTemplate.exchange("https://httpbin.org/user-agent", HttpMethod.GET, entity, Map.class);        
