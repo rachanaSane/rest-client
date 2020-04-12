@@ -49,14 +49,16 @@ public class RecordLabelCreatorTest {
 	public void testCreateRecordLabelStructure() {
 		 Map<String, List<Band>> recordLabels = creator.createRecordLabelStructure(musicFestivals);
 		
+		 Assert.isTrue(recordLabels.containsKey("Pacific Records1"), () -> "Pacific Records1 must be present at the top as key.");
 		 List<Band> pacificRecBands= recordLabels.get("Pacific Records1");
 		 List<Band> womenRecBands = recordLabels.get("Fourth Woman Records1");
 		 Band jillBlackTest = new Band();
 		 jillBlackTest.setBandName("Jill Black-1");
 		 
-		Band jillBlackReal= womenRecBands.get(womenRecBands.indexOf(jillBlackTest));
+		 Assert.isTrue(womenRecBands.contains(jillBlackTest), () -> "Fourth Woman Records1 record label must contain Jill Black-1 band.");
+		 Band jillBlackReal= womenRecBands.get(womenRecBands.indexOf(jillBlackTest));
 		
-		//Assert.isTrue(recordLabels.size()==4, () -> "Value of record label map must be 3");
+		
 		Assert.isTrue(pacificRecBands.size()==3, () -> "Number of bands for Pacific Records label must be 3");
 		Assert.isTrue(jillBlackReal.getMusicFestivals().size()==2, () -> "Number of music festivals for Jill black must be 2");
 	}

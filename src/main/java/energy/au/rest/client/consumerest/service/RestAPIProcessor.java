@@ -25,7 +25,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import energy.au.rest.client.consumerest.ConsumeRestApplication;
-import energy.au.rest.client.consumerest.error.CustomException;
+
 import energy.au.rest.client.consumerest.model.deserialize.MusicFestival;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
