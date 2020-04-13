@@ -22,7 +22,8 @@ import energy.au.rest.client.consumerest.model.deserialize.MusicFestival;
 import energy.au.rest.client.consumerest.model.serialize.Band;
 
 /**
- * This class will create structure for Record label from MusicFestival structure. All entries would be sorted.
+ * This class will create structure for Record label from MusicFestival
+ * structure. All entries would be sorted.
  * 
  * @author Rachana Sane
  *
@@ -37,7 +38,6 @@ public class RecordLabelCreator {
 
 	public Map<String, List<Band>> createRecordLabelStructure(final List<MusicFestival> musicFestivals) {
 
-		
 		Map<String, List<Band>> recordLabels = new ConcurrentHashMap<>();
 
 		for (MusicFestival festival : musicFestivals) {
@@ -51,7 +51,7 @@ public class RecordLabelCreator {
 		}
 
 		LOG.info("finished serialization process -------------------------------->");
-		
+
 		return sortBandsFromRecordLabels(recordLabels);
 
 	}
@@ -61,31 +61,31 @@ public class RecordLabelCreator {
 		for (energy.au.rest.client.consumerest.model.deserialize.Band band : bands) {
 			final String bandName = band.getName();
 			final String recordLabel = band.getRecordLabel();
-			if (recordLabel == null || bandName ==null) {
+			if (recordLabel == null || bandName == null) {
 				continue;
 			}
-			
-			if(!recordLabels.containsKey(recordLabel)) {
+
+			if (!recordLabels.containsKey(recordLabel)) {
 				recordLabels.put(recordLabel, createNewBandList(musicFestivalName, bandName));
 				continue;
 			}
-			
+
 			List<Band> existingBands = recordLabels.get(recordLabel);
-			int index= getBandIndex(bandName,existingBands);
-			if(index < 0) {
+			int index = getBandIndex(bandName, existingBands);
+			if (index < 0) {
 				addNewBand(musicFestivalName, bandName, existingBands);
 				continue;
 			}
-			
+
 			addMusicFestivalToBand(musicFestivalName, existingBands.get(index));
-			
+
 		}
 	}
-	
+
 	private int getBandIndex(String bandName, List<Band> existingBands) {
 		final Band tempBand = new Band();
 		tempBand.setBandName(bandName);
-		return existingBands.indexOf(tempBand);		
+		return existingBands.indexOf(tempBand);
 
 	}
 
@@ -135,7 +135,7 @@ public class RecordLabelCreator {
 			return Collections.EMPTY_MAP;
 		}
 
-		Map<String, List<Band>> sortedbands = recordLabels.entrySet().stream()				
+		Map<String, List<Band>> sortedbands = recordLabels.entrySet().stream()
 				.collect(Collectors.toMap(keyMapper -> keyMapper.getKey(), valueMapper -> valueMapper.getValue()
 						.stream().sorted(Comparator.comparing(Band::getBandName)).collect(Collectors.toList())));
 
@@ -143,11 +143,12 @@ public class RecordLabelCreator {
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue,
 						LinkedHashMap::new));
 
-	//	LOG.info("Resulted Record Labels Structure -------------------------->\n");
+		// LOG.info("Resulted Record Labels Structure -------------------------->\n");
 		try {
-			mapper.java2JSON(sortedRecordLabels,"**************************\n Resulted Record Labels Structure -------------------------->");
+			mapper.java2JSON(sortedRecordLabels,
+					"**************************\n Resulted Record Labels Structure -------------------------->");
 		} catch (JsonProcessingException e) {
-			LOG.error("Error occurred while parsing JAVA to JSON",e);
+			LOG.error("Error occurred while parsing JAVA to JSON", e);
 		}
 
 		return sortedRecordLabels;

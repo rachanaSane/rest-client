@@ -26,6 +26,7 @@ import reactor.core.publisher.Flux;
 
 /**
  * This is main web client for Energy Australia GET API
+ * 
  * @author Rachana Sane
  *
  */
@@ -45,9 +46,7 @@ public class RestAPIProcessor {
 
 	@Autowired
 	private JSONMapper mapper;
-	
-		
-	
+
 	@Bean
 	public RestTemplate restTemplate(RestTemplateBuilder builder) {
 		return builder.build();
@@ -68,15 +67,14 @@ public class RestAPIProcessor {
 
 		List<MusicFestival> musicFestivals = new ArrayList<MusicFestival>();
 
-		
 		festivalAPI.subscribe(new Subscriber<MusicFestival>() {
 			@Override
-			public void onSubscribe(Subscription s) {				
+			public void onSubscribe(Subscription s) {
 				s.request(Long.MAX_VALUE);
 			}
 
 			@Override
-			public void onNext(MusicFestival festival) {				
+			public void onNext(MusicFestival festival) {
 				musicFestivals.add(festival);
 			}
 
@@ -91,7 +89,7 @@ public class RestAPIProcessor {
 				} else {
 					log.error("some error occurred **: " + t.getMessage());
 				}
-				
+
 				try {
 					Thread.sleep(10000);
 				} catch (InterruptedException e) {
@@ -104,23 +102,18 @@ public class RestAPIProcessor {
 
 			@Override
 			public void onComplete() {
-			//	log.info("Data received successfully from Music Festival service.\n Response Received from Energy AU API :");
+				// log.info("Data received successfully from Music Festival service.\n Response
+				// Received from Energy AU API :");
 				try {
-					mapper.java2JSON(musicFestivals,"Input Music festival data received from Energy AU API -------->");
+					mapper.java2JSON(musicFestivals, "Input Music festival data received from Energy AU API -------->");
 					recordLabelCreator.createRecordLabelStructure(musicFestivals);
 				} catch (JsonProcessingException e) {
 					log.error("Error occurred while trying to parse Java object to JSON.", e);
 				}
 			}
 		});
-		
-	
 
 	}
-	
-	
-	
-	
 
 	private ExchangeFilterFunction logRequest() {
 		return (clientRequest, next) -> {
