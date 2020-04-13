@@ -18,10 +18,10 @@ public class JSONMapper {
 	private static final Logger log = LoggerFactory.getLogger(JSONMapper.class);
 	
 	
-	 public void java2JSON(Object obj) throws JsonProcessingException {
+	 public void java2JSON(Object obj,String message) throws JsonProcessingException {
 		 ObjectMapper mapper = new ObjectMapper();
 		 String value = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
-		 log.info("\n"+value);
+		 log.info("\n"+message+"\n"+value);
 	 }
 
 }

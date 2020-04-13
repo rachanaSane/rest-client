@@ -37,15 +37,6 @@ public class RecordLabelCreator {
 
 	public Map<String, List<Band>> createRecordLabelStructure(final List<MusicFestival> musicFestivals) {
 
-		LOG.info("Inside createRecordLabelStructure . Input music festival received ---->");
-		try {
-			mapper.java2JSON(musicFestivals);
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		LOG.info("*******************************************************************");
 		
 		Map<String, List<Band>> recordLabels = new ConcurrentHashMap<>();
 
@@ -152,9 +143,9 @@ public class RecordLabelCreator {
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue,
 						LinkedHashMap::new));
 
-		LOG.info("Resulted Record Labels Structure -------------------------->\n");
+	//	LOG.info("Resulted Record Labels Structure -------------------------->\n");
 		try {
-			mapper.java2JSON(sortedRecordLabels);
+			mapper.java2JSON(sortedRecordLabels,"**************************\n Resulted Record Labels Structure -------------------------->");
 		} catch (JsonProcessingException e) {
 			LOG.error("Error occurred while parsing JAVA to JSON",e);
 		}
