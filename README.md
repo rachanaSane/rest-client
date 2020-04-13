@@ -31,7 +31,7 @@ java -jar target/consume-rest-0.0.1-SNAPSHOT.jar
     provide results if you fire multiple requests one after another. In
     such scenario, you will see below message in the console :
 
-\\\\\***** External Energy Australia Service is not ready yet. We will retry again after few seconds...\\\\\*****
+\***** External Energy Australia Service is not ready yet. We will retry again after few seconds...\*****
 
 Code will retry the request again till it works correctly and receive data from the service.
 
