@@ -2,6 +2,8 @@
 
 Springboot, java8, java reactive programming (webflux), junit
 
+
+
 **How to Run**
 
 1.  Download code from <https://github.com/rachanaSane/rest-client>
@@ -16,19 +18,28 @@ Springboot, java8, java reactive programming (webflux), junit
 
 java -jar target/consume-rest-0.0.1-SNAPSHOT.jar
 
+6. Open browser and type "http://localhost:8080/api"
+
+7. check your commandline console for the output
+
+
+
+
 **Important points to note**
 
 -   Webservice exposed by energy Australia is sometimes not ready to
     provide results if you fire multiple requests one after another. In
     such scenario, you will see below message in the console :
 
-\*\*\*\*\* External Energy Australia Service is not ready yet. Please
-try again after few minutes.\*\*\*\*\*
+\\\\\***** External Energy Australia Service is not ready yet. We will retry again after few seconds...\\\\\*****
 
-If you try to run code again after 2/3 minutes, it will work correctly.
+Code will retry the request again till it works correctly and receive data from the service.
 
+-   Input data received from Energy AU API will be logged in the console under text
+    \" Input Music festival data received from Energy AU API --------> \"
+    
 -   Expected output could be found on console printed in JSON format
-    below text \"Resulted Record Labels Structure\"
+    below text \"Resulted Record Labels Structure -------------------------->\"
 
 **Assumptions**
 
@@ -72,7 +83,7 @@ If you try to run code again after 2/3 minutes, it will work correctly.
 
 -   Better test coverage
 
--   Retry logic when external service is not ready
+-   Retry logic could be improved further
 
 **Sample output produced by programme**
 
