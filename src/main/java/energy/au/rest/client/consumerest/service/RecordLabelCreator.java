@@ -37,6 +37,16 @@ public class RecordLabelCreator {
 
 	public Map<String, List<Band>> createRecordLabelStructure(final List<MusicFestival> musicFestivals) {
 
+		LOG.info("Inside createRecordLabelStructure . Input music festival received ---->");
+		try {
+			mapper.java2JSON(musicFestivals);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		LOG.info("*******************************************************************");
+		
 		Map<String, List<Band>> recordLabels = new ConcurrentHashMap<>();
 
 		for (MusicFestival festival : musicFestivals) {
