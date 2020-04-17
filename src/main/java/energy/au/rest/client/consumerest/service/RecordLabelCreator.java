@@ -133,17 +133,20 @@ public class RecordLabelCreator {
 	private Map<String, List<Band>> sortBandsFromRecordLabels(Map<String, List<Band>> recordLabels) {
 		if (recordLabels.isEmpty()) {
 			return Collections.EMPTY_MAP;
-		}
-
+		}	
+		
 		Map<String, List<Band>> sortedbands = recordLabels.entrySet().stream()
-				.collect(Collectors.toMap(keyMapper -> keyMapper.getKey(), valueMapper -> valueMapper.getValue()
-						.stream().sorted(Comparator.comparing(Band::getBandName)).collect(Collectors.toList())));
+				.collect(Collectors.toMap(keyMapper -> keyMapper.getKey(), valueMapper ->{
+					List<Band> bands=valueMapper.getValue();					
+					return bands.stream().sorted(Comparator.comparing(Band::getBandName)).collect(Collectors.toList());					
+				}));
+					
 
 		Map<String, List<Band>> sortedRecordLabels = sortedbands.entrySet().stream().sorted(Map.Entry.comparingByKey())
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue,
 						LinkedHashMap::new));
 
-		// LOG.info("Resulted Record Labels Structure -------------------------->\n");
+		
 		try {
 			mapper.java2JSON(sortedRecordLabels,
 					"**************************\n Resulted Record Labels Structure -------------------------->");

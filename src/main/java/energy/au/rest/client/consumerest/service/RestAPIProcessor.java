@@ -114,6 +114,22 @@ public class RestAPIProcessor {
 		});
 
 	}
+	
+	public List<MusicFestival> getRecordLabelDifferentApproach() {
+		
+	/*	Flux<MusicFestival> festivalAPI = webClient.get().uri("/api/v1/festivals").exchange()
+				.flatMapMany(clientResponse -> clientResponse.bodyToFlux(MusicFestival.class));*/
+		
+		List<MusicFestival> musicFestivals = webClient.get().uri("/api/v1/festivals").retrieve().bodyToFlux(MusicFestival.class).collectList().block();
+		
+		try {
+			mapper.java2JSON(musicFestivals, "inside getRecordLabelDifferentApproach:");
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return musicFestivals;
+	}
 
 	private ExchangeFilterFunction logRequest() {
 		return (clientRequest, next) -> {
